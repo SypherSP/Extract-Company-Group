@@ -9,6 +9,9 @@ not_found_msg = 'Unavailable'
 
 
 def takeInput():
+    '''
+    takes input from the user
+    '''
     global html_text
 
     print("Enter the URL of the zaubacorp search result (https://www.zaubacorp.com/) : ")
@@ -17,6 +20,10 @@ def takeInput():
 
 
 def getList():
+    '''
+    Finds the list of companies belonging to the same group
+    and stores them with their URLs in a list
+    '''
     global list_of_companies
 
     soup = BeautifulSoup(html_text, 'lxml')
@@ -33,47 +40,18 @@ def getList():
 
 
 def getInfo():
+    '''
+    Uses the list of companies and fetches their information using 
+    their URLs
+    '''
     for name, URL in list_of_companies:
-        infoHelper(name,URL)
-        # html = requests.get(URL).text
-        # soup = BeautifulSoup(html, 'lxml')
-        # companies_info[name] = {}
-        # try:
-        #     companies_info[name]['url'] = URL
-        #     companies_info[name]['roc'] = soup.find(
-        #         'p', text='RoC').parent.find_next('td').p.text[4:]
-        #     companies_info[name]['status'] = soup.find(
-        #         'p', text='Company Status').parent.find_next('td').p.span.text
-        #     date = soup.find(
-        #         'p', text='Date of Incorporation').parent.find_next('td').p.text
-        #     companies_info[name]['date_of_incorporation'] = date[0:6]+date[-5:]
-        #     try:
-        #         companies_info[name]['activity'] = soup.find(
-        #             'p', text='Activity').parent.find_next('td').p.text
-        #     except:
-        #         companies_info[name]['activity'] = not_found_msg
-
-        #     try:
-        #         companies_info[name]['paid_up_capital'] = soup.find(
-        #             'p', text='Paid up capital').parent.find_next('td').p.text
-        #     except:
-        #         companies_info[name]['paid_up_capital'] = not_found_msg
-
-        #     est_dets = [td.p.text for td in soup.find(
-        #         'strong', text='Establishment Name').parent.parent.find_next('tr').find_all('td')]
-        #     address = ''
-        #     if(est_dets[0] == 'No establishments found'):
-        #         address = not_found_msg
-        #     else:
-        #         address = f'{est_dets[0]},\n{est_dets[3]}\n{est_dets[1]}-{est_dets[2]}'
-        #     companies_info[name]['establishment_details'] = address
-        # except:
-        #     print("Something went wrong")
-        #     print(URL)
-        #     del companies_info[name]
+        fetchDetails(name, URL)
 
 
-def infoHelper(name, URL):
+def fetchDetails(name, URL):
+    '''
+    Helper function to fetch information for a single company
+    '''
     html = requests.get(URL).text
     soup = BeautifulSoup(html, 'lxml')
     companies_info[name] = {}
@@ -107,11 +85,14 @@ def infoHelper(name, URL):
             address = f'{est_dets[0]},\n{est_dets[3]}\n{est_dets[1]}-{est_dets[2]}'
         companies_info[name]['establishment_details'] = address
     except:
-        print("Something went wrong")
-        print(URL)
+        print(f"Something went wrong\n{URL}\n")
         del companies_info[name]
 
+
 def info1company():
+    '''
+    test function created to check on the fetch details functionality
+    '''
     URL = "https://www.zaubacorp.com/company/DABUR-FOODS-LIMITED/U15202DL1996PLC083594"
     html = requests.get(URL).text
     soup = BeautifulSoup(html, 'lxml')
@@ -149,11 +130,15 @@ def info1company():
         address = f'{est_dets[0]},\n{est_dets[3]}\n{est_dets[1]}-{est_dets[2]}'
     info['establishment_details'] = address
 
-    # for key, value in info.items():
-    #     print(key, value)
+    for key, value in info.items():
+        print(key, value)
 
 
 def writeToFile():
+    '''
+    Function to write the data into an excel file
+    '''
+
     workbook = xlsxwriter.Workbook('Information_on_company_group.xlsx')
 
     sheet = workbook.add_worksheet()

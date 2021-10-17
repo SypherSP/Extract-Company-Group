@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Group of Companies</title>
+</head>
+ 
+<body>
+    <form action="{% url 'findgroup:index' %}" method="post">
+        {% csrf_token %}
+        <label for="url">Enter the URL of the <a href="https://www.zaubacorp.com/" target="_blank">Zaubacorp</a> search
+            result: </label><br>
+        <input type="text" id="url" name="URL" required autofocus><br>
+        <input type="submit" value="search">
+    </form>
+</body>
+</html>
